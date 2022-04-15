@@ -1,0 +1,39 @@
+<ul class="list-inline">
+  <li>
+    <a href="/dashboard/new" class="btn btn-success btn-sm"><i class="fa fa-file"></i> New Article</a>
+  </li>
+</ul>
+<% if(typeof articles!='undefined'&&articles.length>0){%>
+  <% articles.forEach(article=>{%>
+    <!-- Post -->
+    <div class="post">
+      <div class="user-block">
+        <img class="img-circle img-bordered-sm" src="<%=article.author.image%>" alt="user image">
+        <span class="username">
+                  <a href="#"><%=article.author.displayName%></a>
+                  <a href="/dashboard/edit/<%= article._id %> " class="pull-right btn-box-tool"><i class="fa fa-edit"></i></a>
+                  <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>
+                </span>
+        <span class="description">Shared <%=article.status%>ly - <%- formatDate(article.date, 'MMMM Do YYYY h:mm a')%></span>
+      </div>
+      <!-- /.user-block -->
+      <h4 class="card-title">
+        <%=article.title%>
+      </h4>
+      <p>
+        <%-article.article%>
+      </p>
+      <ul class="list-inline">
+        <li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>
+        <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like (<%=article.likes.length%>)</a>
+        </li>
+        <li class="pull-right">
+          <a href="#" class="link-black text-sm"><i class="fa fa-comments-o margin-r-5"></i> Comments
+                (<%=article.comments.length%>)</a></li>
+      </ul>
+
+      <input class="form-control input-sm" type="text" placeholder="Type a comment">
+    </div>
+    <!-- /.post -->
+    <%})%>
+      <%}%>
