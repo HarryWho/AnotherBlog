@@ -123,7 +123,7 @@
       skills: formData.get('skills')
     }
     alert(e.target.action)
-    DoAjax(e.target.action, myData, (response) => {
+    DoAjax(e.target.action, myData, "application/x-www-form-urlencoded", (response) => {
       alert(response)
     })
 

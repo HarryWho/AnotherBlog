@@ -1,0 +1,64 @@
+<div class="example-modal" id="modal">
+    <div class="modal modal-primary show">
+        <div class="modal-dialog show">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">File System</h4>
+                </div>
+                <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                <input type="file" name="avatar" id="avatar">
+                </form>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="button" id="saveModalButton" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        <!-- /.modal-content -->
+        </div>
+    <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+<!-- /.example-modal -->
+<script>
+    const saveModalButton = document.getElementById('saveModalButton');
+    saveModalButton.addEventListener('click', (e) => {
+       
+       $('#uploadForm').submit()
+        
+    })
+        
+ 
+  $('#uploadForm').submit(function(e){
+       var fileInput = document.getElementById('avatar');
+        var file = fileInput.files[0];
+        alert(file)
+        var formData = new FormData();
+        formData.append('file', file);
+        alert(formData.get('file'))
+    $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "/ajax/upload/",
+            data: formData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (response) {
+                alert(response.message)
+                
+            },
+            error: function (e) {
+
+               alert(e)
+
+            }
+        });
+    e.preventDefault();
+  });
+</script>

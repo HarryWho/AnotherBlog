@@ -245,7 +245,7 @@
     }
 
 
-    DoAjax('/ajax/settings?_method=PUT', data, (response) => {
+    DoAjax('/ajax/settings?_method=PUT', data, "application/x-www-form-urlencoded", (response) => {
 
       AdminLTE.controlSidebar._fix($(".control-sidebar-bg"));
       AdminLTE.controlSidebar._fix($(".control-sidebar"));
@@ -281,7 +281,7 @@
       skin: val
     }
 
-    DoAjax('/ajax/settings?_method=PUT', data, (response) => {
+    DoAjax('/ajax/settings?_method=PUT', data, "application/x-www-form-urlencoded", (response) => {
 
       // if (typeof(Storage) !== "undefined") {
 
@@ -348,11 +348,11 @@
       if (sidebar.hasClass("control-sidebar-dark")) {
         sidebar.removeClass("control-sidebar-dark")
         sidebar.addClass("control-sidebar-light")
-        DoAjax('/ajax/settings?_method=PUT', { sidebar: 'control-sidebar-light' }, (response) => {})
+        DoAjax('/ajax/settings?_method=PUT', { sidebar: 'control-sidebar-light' }, "application/x-www-form-urlencoded", (response) => {})
       } else {
         sidebar.removeClass("control-sidebar-light")
         sidebar.addClass("control-sidebar-dark")
-        DoAjax('/ajax/settings?_method=PUT', { sidebar: 'control-sidebar-dark' }, (response) => {})
+        DoAjax('/ajax/settings?_method=PUT', { sidebar: 'control-sidebar-dark' }, "application/x-www-form-urlencoded", (response) => {})
 
       }
     });
