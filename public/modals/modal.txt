@@ -36,10 +36,10 @@
   $('#uploadForm').submit(function(e){
        var fileInput = document.getElementById('avatar');
         var file = fileInput.files[0];
-        alert(file)
+        
         var formData = new FormData();
         formData.append('file', file);
-        alert(formData.get('file'))
+        
     $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',

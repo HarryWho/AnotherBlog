@@ -11,8 +11,10 @@
         <img class="img-circle img-bordered-sm" src="<%=article.author.image%>" alt="user image">
         <span class="username">
                   <a href="#"><%=article.author.displayName%></a>
-                  <a href="/dashboard/edit/<%= article._id %> " class="pull-right btn-box-tool"><i class="fa fa-edit"></i></a>
-                  <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>
+                  <a href="/dashboard/edit/<%= article._id %> " class="pull-right btn-box-tool" title="Edit"><i class="fa fa-edit"></i></a>
+                  <form action="/dashboard/delete/<%=article._id%>?_method=DELETE" method="post" class="inline" id="deleteForm">
+                  <button type="submit" class="pull-right btn btn-small btn-box-tool" title="Delete"><i class="fa fa-trash"></i></button>
+                  </form>
                 </span>
         <span class="description">Shared <%=article.status%>ly - <%- formatDate(article.date, 'MMMM Do YYYY h:mm a')%></span>
       </div>
@@ -37,3 +39,11 @@
     <!-- /.post -->
     <%})%>
       <%}%>
+
+        <script>
+          const form = document.getElementById('deleteForm')
+          form.addEventListener('submit', (e) => {
+            if (!confirm('Are you sure you want to delete this Article?'))
+              e.preventDefault()
+          })
+        </script>

@@ -1,12 +1,34 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+
 const router = express.Router();
-const Profile = require('../models/ProfileModel')
-const Setting = require('../models/SettingModel')
-const fs = require('fs')
+const Profile = require('../models/ProfileModel');
+const Setting = require('../models/SettingModel');
+const fs = require('fs');
 const fileUpload = require('express-fileupload');
-
-
+const Article = require('../models/ArticleModel');
+const { GetArticle, SaveComment } = require('../middleware/functions');
+const { formatDate } = require('../middleware/formats')
+router.post('/comment', (req, res) => {
+  req.body.author = req.user._id
+  SaveComment(req.body).then((comment) => {
+    Article.findByIdAndUpdate(req.body.articleID, { $push: { comments: comment._id } }).then(() => {
+      res.send(`<div class="box-comment">
+      <!-- User image -->
+      <img class="img-circle img-sm" src="${req.user.image}" alt="User Image">
+      <div class="comment-text">
+        <span class="username">
+        ${req.user.displayName}
+        <span class="text-muted pull-right">${formatDate(comment.date, 'MMMM Do YYYY')}</span>
+        </span>
+        <!-- /.username -->
+        ${req.body.comment}
+      </div>
+      <!-- /.comment-text -->
+    </div>
+    <!-- /.box-comment -->`)
+    })
+  })
+})
 router.put('/profile', async(req, res) => {
 
   let profile = await Profile.findOneAndUpdate({ user: req.user._id }, {
@@ -44,10 +66,10 @@ router.post('/upload', async(req, res) => {
       });
     } else {
       //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-      let avatar = req.files.avatar;
-      console.log(avatar)
-        //Use the mv() method to place the file in upload directory (i.e. "uploads")
-      avatar.mv('./img/' + avatar.name);
+      let avatar = req.files.file;
+
+      //Use the mv() method to place the file in upload directory (i.e. "uploads")
+      avatar.mv('./public/img/' + avatar.name);
 
       //send response
       res.send({
@@ -65,4 +87,24 @@ router.post('/upload', async(req, res) => {
     res.status(500).send(err);
   }
 })
+
+
+
+router.put('/liked', (req, res) => {
+
+  GetArticle({ _id: req.body.articleID }).then(async(article) => {
+    let response = ''
+    if (article.likes.includes(req.user._id)) {
+      await Article.findByIdAndUpdate(req.body.articleID, { $pull: { likes: req.user._id } })
+      response = "unliked"
+    } else {
+      await Article.findByIdAndUpdate(req.body.articleID, { $push: { likes: req.user._id } })
+      response = 'liked'
+    }
+    res.send(response)
+  })
+})
+
+
+
 module.exports = router;

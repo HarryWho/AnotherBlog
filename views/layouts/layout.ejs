@@ -25,6 +25,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         apply the skin class to the body tag so the changes take effect.
   -->
   <link rel="stylesheet" href="/dist/css/skins/_all-skins.min.css">
+  <link rel="stylesheet" href="/css/style.css">
   <%- style %>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -77,7 +78,7 @@ desired effect
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            <%- typeof pagetTitle!='undefined'? pageTitle: 'Dashboard'%>
+            <%- typeof title!='undefined'? title: 'Dashboard'%>
               <small><%- typeof optionalDescription!='undefined'? optionalDescription: '' %></small>
           </h1>
           <!-- <ol class="breadcrumb">
@@ -198,10 +199,10 @@ desired effect
     user experience. Slimscroll is required when using the
     fixed layout. -->
   <script src="/dist/js/app.min.js"></script>
+  <script src="/dist/js/demo.js"></script>
+  <script src="/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+  <script src="/js/script.js"></script>
   <%- script %>
-    <script src="/dist/js/demo.js"></script>
-    <script src="/plugins/slimScroll/jquery.slimscroll.min.js"></script>
-    <script src="/js/script.js"></script>
 </body>
 
 </html>

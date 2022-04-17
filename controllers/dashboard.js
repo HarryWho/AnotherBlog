@@ -1,68 +1,68 @@
 const express = require('express')
 const router = express.Router();
-const Profile = require('../models/ProfileModel')
-const Setting = require('../models/SettingModel')
+
 const Article = require('../models/ArticleModel')
-const Comment = require('../models/CommentModel')
-router.get('/', async(req, res) => {
-  const profile = await Profile.findOne({ user: req.user._id })
-  const settings = await Setting.findOne({ _id: req.user.settings })
-  const articles = await Article.find({ author: req.user._id }).sort({ date: 'desc' })
-    .populate([{
-      path: 'author',
-      select: ['displayName', 'image']
-    }, {
-      path: 'likes',
-      select: ['displayName', 'image']
-    }, {
-      path: 'comments',
-      populate: [{
-        path: 'author',
-        select: ['displayName', 'image']
-      }]
-    }])
-  res.render('pages/profile', {
-    user: req.user,
-    profile: profile,
-    settings: settings,
-    articles: articles
+
+const { SaveNewArticle } = require('../middleware/functions')
+const { GetSettingsProfileArticles, GetSettingsProfile } = require('../middleware/function_caller')
+router.get('/', (req, res) => {
+  GetSettingsProfileArticles(req.user, { author: `${req.user._id}` }, (settings, profile, articles) => {
+    res.render('pages/profile', {
+      user: req.user,
+      profile: profile,
+      settings: settings,
+      articles: articles
+    })
   })
 })
 
-router.get('/new', async(req, res) => {
-  const profile = await Profile.findOne({ user: req.user._id })
-  const settings = await Setting.findOne({ _id: req.user.settings })
-  res.render('pages/editor', {
-    user: req.user,
-    profile: profile,
-    settings: settings,
-    action: '/dashboard',
-    caption: 'Save'
+
+router.get('/new', (req, res) => {
+  GetSettingsProfile(req.user, (settings, profile) => {
+    res.render('pages/editor', {
+      user: req.user,
+      profile: profile,
+      settings: settings,
+      action: '/dashboard',
+      caption: 'Save',
+      title: 'Create New Article'
+    })
   })
 })
 
-router.get('/edit/:articleID', async(req, res) => {
-  const article = await Article.findById(req.params.articleID);
-  const profile = await Profile.findOne({ user: req.user._id })
-  const settings = await Setting.findOne({ _id: req.user.settings })
-  res.render('pages/editor', {
-    user: req.user,
-    profile: profile,
-    settings: settings,
-    article: article,
-    action: `/dashboard/edit/${article._id}?_method=PUT`,
-    caption: 'Update'
+router.get('/edit/:articleID', (req, res) => {
+  GetSettingsProfileArticles(req.user, { _id: `${req.params.articleID}` }, (settings, profile, articles) => {
+    res.render('pages/editor', {
+      user: req.user,
+      profile: profile,
+      settings: settings,
+      article: articles[0],
+      action: `/dashboard/edit/${articles[0]._id}?_method=PUT`,
+      caption: 'Update',
+      title: 'Edit Article'
+    })
   })
+
 })
+
 router.put('/edit/:articleID', async(req, res) => {
   await Article.findByIdAndUpdate(req.params.articleID, req.body)
   res.redirect('/dashboard')
 })
+
 router.post('/', (req, res) => {
-  const article = new Article(req.body)
-  article.save((err) => {
-    res.redirect('/dashboard')
+  SaveNewArticle(req.body).then((err, isSaved) => {
+    if (!err) {
+      res.redirect('/dashboard')
+    } else {
+      res.redirect('/dashboard/new')
+    }
   })
+})
+
+router.delete('/delete/:articleID', async(req, res) => {
+  await Article.findByIdAndDelete(req.params.articleID)
+  res.redirect('/dashboard')
 })
 
 module.exports = router

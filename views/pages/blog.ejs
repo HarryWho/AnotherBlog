@@ -25,12 +25,12 @@
           <p>
             <%-article.article%>
           </p>
-          <button type="button" class="btn btn-default btn-xs"><i class="fa fa-share"></i> Share</button>
-          <button type="button" class="btn btn-default btn-xs"><i class="fa fa-thumbs-o-up"></i> Like</button>
-          <span class="pull-right text-muted">127 likes - 3 comments</span>
+          <a href="#" type="button" class="btn btn-default btn-xs"><i class="fa fa-share"></i> Share</a>
+          <a href="#" type="button" class="btn btn-default btn-xs <%- article.likes.some((e) => e.displayName===user.displayName) ? 'liked' : '' %>" id="like-btn" data-articleid="<%=article._id%>"><i class="fa fa-thumbs-o-up"></i> Like (<span class="like-count"><%=article.likes.length%></span>)</a>
+          <span class="pull-right"><span id="comment-count-<%=article._id%>"><%=article.comments.length%></span> comments</span>
         </div>
         <!-- /.box-body -->
-        <div class="box-footer box-comments">
+        <div class="box-footer box-comments" id="<%=article._id%>">
           <% article.comments.forEach(comment=>{%>
             <div class="box-comment">
               <!-- User image -->
@@ -39,7 +39,7 @@
               <div class="comment-text">
                 <span class="username">
                 <%=comment.author.displayName%>
-                <span class="text-muted pull-right"><%=comment.date%></span>
+                <span class="text-muted pull-right"><%- formatDate(comment.date, 'MMMM Do YYYY')%></span>
                 </span>
                 <!-- /.username -->
                 <%- comment.comment%>
@@ -49,15 +49,16 @@
             <!-- /.box-comment -->
 
             <%})%>
-
         </div>
+
         <!-- /.box-footer -->
         <div class="box-footer">
-          <form action="#" method="post">
+          <form class="comment-form" action="/ajax/comment" method="POST">
+            <input type="hidden" name="articleID" value="<%=article._id%>">
             <img class="img-responsive img-circle img-sm" src="<%=user.image%>" alt="Alt Text">
             <!-- .img-push is used to add margin to elements next to floating images -->
             <div class="img-push">
-              <input type="text" class="form-control input-sm" placeholder="Press enter to post comment">
+              <input type="text" name="comment" id="comment-text" class="form-control input-sm" placeholder="Press enter to post comment">
             </div>
           </form>
         </div>
@@ -67,3 +68,55 @@
       <%})%>
   </div>
 </div>
+
+<script>
+  const commentText = document.querySelectorAll('#comment-text')
+  const commentForm = document.querySelectorAll('.comment-form')
+  const likeBtn = document.querySelectorAll('#like-btn')
+    /** forms **/
+  commentForm.forEach(frm => {
+      frm.addEventListener('submit', (e) => {
+        e.preventDefault()
+
+        const data = {
+          articleID: frm.articleID.value,
+          comment: frm.comment.value
+        }
+
+        DoAjax(frm.action, data, (response) => {
+          const parent = document.getElementById(frm.articleID.value);
+          const child = document.createElement('div')
+          const commentCount = document.getElementById('comment-count-' + frm.articleID.value)
+          child.innerHTML = response
+          parent.append(child)
+          commentCount.innerHTML = parseInt(commentCount.innerHTML) + 1
+        })
+      })
+    })
+    /** Comments textboxs **/
+  commentText.forEach(textComment => {
+    textComment.addEventListener('keypress', (e) => {
+
+    })
+  })
+
+  /** Like Button **/
+  likeBtn.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault()
+      likeCount = btn.getElementsByClassName('like-count')
+
+      DoAjax('/ajax/liked?_method=PUT', {
+        articleID: btn.getAttribute('data-articleid')
+      }, (response) => {
+        if (response === 'liked') {
+          btn.classList.add('liked')
+          likeCount[0].innerHTML = parseInt(likeCount[0].innerHTML) + 1;
+        } else {
+          btn.classList.remove('liked')
+          likeCount[0].innerHTML = parseInt(likeCount[0].innerHTML) - 1;
+        }
+      })
+    })
+  });
+</script>
