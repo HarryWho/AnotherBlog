@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const NotificationSchema = new mongoose.Schema({
   userTo: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     required: true
   },
   userFrom: {
@@ -12,6 +12,9 @@ const NotificationSchema = new mongoose.Schema({
   message: {
     type: String,
     required: true
+  },
+  articleId: {
+    type: mongoose.Schema.Types.ObjectId
   },
   date: {
     type: Date,

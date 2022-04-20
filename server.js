@@ -67,6 +67,8 @@ app.use('/local', require('./controllers/localAuth'))
 app.use('/dashboard', ensureAuth, require('./controllers/dashboard'))
 app.use('/ajax', ensureAuth, require('./controllers/ajax_calls'))
 app.use('/blog', ensureAuth, require('./controllers/blog'))
+app.use('/mailbox', ensureAuth, require('./controllers/email'))
+app.use('/calendar', ensureAuth, require('./controllers/calendar'))
 
 // connect to MongoDB
 ConnectMongoDB();

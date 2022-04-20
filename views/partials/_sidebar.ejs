@@ -30,17 +30,18 @@
 <ul class="sidebar-menu">
   <li class="header">HEADER</li>
   <!-- Optionally, you can add icons to the links -->
-  <li><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-  <li><a href="/blog"><i class="fa fa-book"></i> <span>Blog</span></a></li>
-  <li class="treeview">
-    <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
+  <li class="<%- title.toLowerCase()==='dashboard' ? 'active': '' %>"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+  <li class="<%- title.toLowerCase()==='blog' ? 'active': '' %>"><a href="/blog "><i class="fa fa-book "></i> <span>Blog</span></a></li>
+  <li class="<%- title.toLowerCase()==='calendar' ? 'active': '' %>"><a href="/calendar "><i class="fa fa-calendar-check-o"></i> <span>Calendar</span></a></li>
+  <li class="treeview <%- title.toLowerCase()==='mailbox'||title.toLowerCase()==='compose email' ? 'active': '' %>">
+    <a href="#"><i class="fa fa-envelope-o"></i> <span>Mailbox</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
             </a>
     <ul class="treeview-menu">
-      <li><a href="#">Link in level 2</a></li>
-      <li><a href="#">Link in level 2</a></li>
+      <li class="<%- title.toLowerCase()==='mailbox' ? 'active': '' %>"><a href="/mailbox">Inbox</a></li>
+      <li class="<%- title.toLowerCase()==='compose email' ? 'active': '' %>"><a href="/mailbox/compose">Compose</a></li>
     </ul>
   </li>
 </ul>

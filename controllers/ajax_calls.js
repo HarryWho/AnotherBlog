@@ -6,7 +6,7 @@ const Setting = require('../models/SettingModel');
 const fs = require('fs');
 const fileUpload = require('express-fileupload');
 const Article = require('../models/ArticleModel');
-const { GetArticle, SaveComment } = require('../middleware/functions');
+const { GetArticle, SaveComment, SaveNotification } = require('../middleware/functions');
 const { formatDate } = require('../middleware/formats')
 router.post('/comment', (req, res) => {
   req.body.author = req.user._id
@@ -94,14 +94,18 @@ router.put('/liked', (req, res) => {
 
   GetArticle({ _id: req.body.articleID }).then(async(article) => {
     let response = ''
-    if (article.likes.includes(req.user._id)) {
+    if (article.likes.some((e) => e.displayName === req.user.displayName)) {
       await Article.findByIdAndUpdate(req.body.articleID, { $pull: { likes: req.user._id } })
-      response = "unliked"
+      res.send("unliked")
     } else {
-      await Article.findByIdAndUpdate(req.body.articleID, { $push: { likes: req.user._id } })
-      response = 'liked'
+
+      SaveNotification(article, req.user).then((notification) => {
+        Article.findByIdAndUpdate(req.body.articleID, { $push: { likes: req.user._id } }).then(() => {
+          res.send('liked')
+        })
+
+      })
     }
-    res.send(response)
   })
 })
 

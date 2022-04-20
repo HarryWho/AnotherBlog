@@ -1,13 +1,9 @@
 const mongoose = require('mongoose')
 
 const TaskSchema = new mongoose.Schema({
-  userTo: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
-  },
-  userFrom: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
   },
   title: {
     type: String,
@@ -22,3 +18,5 @@ const TaskSchema = new mongoose.Schema({
     default: Date.now
   }
 })
+
+module.exports = mongoose.model('Task', TaskSchema)

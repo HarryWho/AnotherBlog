@@ -1,0 +1,65 @@
+<div class="col-lg-12">
+  <div class="box box-widget">
+    <div class="box-header with-border">
+      <div class="user-block">
+        <img class="img-circle" src="<%= article.author.image%>" alt="User Image">
+        <span class="username"><a href="#"><%=article.author.displayName%></a></span>
+        <span class="description">Shared publicly - <%- formatDate(article.date, 'MMMM Do YYYY')%></span>
+      </div>
+      <!-- /.user-block -->
+      <div class="box-tools">
+        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Mark as read">
+          <i class="fa fa-circle-o"></i></button>
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        </button>
+        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+      </div>
+      <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+
+      <p>
+        <%-article.article%>
+      </p>
+      <a href="#" type="button" class="btn btn-default btn-xs"><i class="fa fa-share"></i> Share</a>
+      <a href="#" type="button" class="btn btn-default btn-xs <%- article.likes.some((e) => e.displayName===user.displayName) ? 'liked' : '' %>" id="like-btn" data-articleid="<%=article._id%>"><i class="fa fa-thumbs-o-up"></i> Like (<span class="like-count"><%=article.likes.length%></span>)</a>
+      <span class="pull-right"><span id="comment-count-<%=article._id%>"><%=article.comments.length%></span> comments</span>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer box-comments" id="<%=article._id%>">
+      <% article.comments.forEach(comment=>{%>
+        <div class="box-comment">
+          <!-- User image -->
+          <img class="img-circle img-sm" src="<%=comment.author.image%>" alt="User Image">
+
+          <div class="comment-text">
+            <span class="username">
+                <%=comment.author.displayName%>
+                <span class="text-muted pull-right"><%- formatDate(comment.date, 'MMMM Do YYYY')%></span>
+            </span>
+            <!-- /.username -->
+            <%- comment.comment%>
+          </div>
+          <!-- /.comment-text -->
+        </div>
+        <!-- /.box-comment -->
+
+        <%})%>
+    </div>
+
+    <!-- /.box-footer -->
+    <div class="box-footer">
+      <form class="comment-form" action="/ajax/comment" method="POST">
+        <input type="hidden" name="articleID" value="<%=article._id%>">
+        <img class="img-responsive img-circle img-sm" src="<%=user.image%>" alt="Alt Text">
+        <!-- .img-push is used to add margin to elements next to floating images -->
+        <div class="img-push">
+          <input type="text" name="comment" id="comment-text" class="form-control input-sm" placeholder="Press enter to post comment">
+        </div>
+      </form>
+    </div>
+    <!-- /.box-footer -->
+  </div>
+  <!-- /.box -->
+</div>
