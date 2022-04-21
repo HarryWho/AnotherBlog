@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 // static folder
+
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Set up view engine and layouts
